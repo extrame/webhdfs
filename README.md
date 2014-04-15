@@ -1,23 +1,23 @@
-[![Build Status](https://drone.io/github.com/vladimirvivien/gowfs/status.png)](https://drone.io/github.com/vladimirvivien/gowfs/latest)
+[![Build Status](https://drone.io/github.com/vladimirvivien/webhdfs/status.png)](https://drone.io/github.com/vladimirvivien/webhdfs/latest)
 
-## gowfs 
-gowfs is a Go bindings for Hadoop HDFS via its WebHDFS interface.  It provides typed access to remote HDFS resources via Go's JSON marshaling system.  gowfs follows the WebHDFS JSON protocol outline in  http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/WebHDFS.html.  It has been tested with Apache Hadoop 2.x.x - series.
+## webhdfs 
+webhdfs is a Go bindings for Hadoop HDFS via its WebHDFS interface.  It provides typed access to remote HDFS resources via Go's JSON marshaling system.  webhdfs follows the WebHDFS JSON protocol outline in  http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/WebHDFS.html.  It has been tested with Apache Hadoop 2.x.x - series.
 
 #### GoDoc Package Documentation
-GoDoc documentation - https://godoc.org/github.com/vladimirvivien/gowfs
+GoDoc documentation - https://godoc.org/github.com/vladimirvivien/webhdfs
 
 ### Usage
 ```
-go get github.com/vladimirvivien/gowfs
+go get github.com/vladimirvivien/webhdfs
 ```
 ```go
-import github.com/vladimirvivien/gowfs
+import github.com/vladimirvivien/webhdfs
 ...
-fs, err := gowfs.NewFileSystem(gowfs.Configuration{Addr: "localhost:50070", User: "hdfs"})
+fs, err := webhdfs.NewFileSystem(webhdfs.Configuration{Addr: "localhost:50070", User: "hdfs"})
 if err != nil{
 	log.Fatal(err)
 }
-checksum, err := fs.GetFileChecksum(gowfs.Path{Name: "location/to/file"})
+checksum, err := fs.GetFileChecksum(webhdfs.Path{Name: "location/to/file"})
 if err != nil {
 	log.Fatal(err)
 }
@@ -25,7 +25,7 @@ fmt.Println (checksum)
 ```
 
 ### Run HDFS Test
-To see the API used, see directory `test-hdfs`. Compile and use that code to test against a running  HDFS deployment.  See https://github.com/vladimirvivien/gowfs/tree/master/test-hdfs.
+To see the API used, see directory `test-hdfs`. Compile and use that code to test against a running  HDFS deployment.  See https://github.com/vladimirvivien/webhdfs/tree/master/test-hdfs.
 
 #### HDFS Setup
 * Enable `dfs.webhdfs.enabled` property in your hsdfs-site.xml 
@@ -33,14 +33,14 @@ To see the API used, see directory `test-hdfs`. Compile and use that code to tes
 
 
 ## API Overview
-gowfs lets you access HDFS resources via two structs `FileSystem` and `FsShell`.  Use FileSystem to get access to low level callse.  FsShell is designed to provide a higer level of abstraction and integration with the local file system.
+webhdfs lets you access HDFS resources via two structs `FileSystem` and `FsShell`.  Use FileSystem to get access to low level callse.  FsShell is designed to provide a higer level of abstraction and integration with the local file system.
 
 ### FileSystem API 
 #### Configuration{} Struct
 Use the `Configuration{}` struct to specify paramters for the file system.  You can create configuration either using a `Configuration{}` literal or using `NewConfiguration()` for defaults. 
 
 ```
-conf := *gowfs.NewConfiguration()
+conf := *webhdfs.NewConfiguration()
 conf.Addr = "localhost:50070"
 conf.User = "hdfs"
 conf.ConnectionTime = time.Second * 15
@@ -50,17 +50,17 @@ conf.DisableKeepAlives = false
 #### FileSystem{} Struct
 Create a new `FileSystem{}` struct before you can make call to any functions.  You create the FileSystem by passing in a `Configuration` pointer as shown below. 
 ```
-fs, err := gowfs.NewFileSystem(conf)
+fs, err := webhdfs.NewFileSystem(conf)
 ```
 Now you are ready to communicate with HDFS.
 
 #### Create File
 `FileSystem.Create()` creates and store a remote file on the HDFS server.
-See https://godoc.org/github.com/vladimirvivien/gowfs#FileSystem.Create
+See https://godoc.org/github.com/vladimirvivien/webhdfs#FileSystem.Create
 ```
 ok, err := fs.Create(
     bytes.NewBufferString("Hello webhdfs users!"),
-	gowfs.Path{Name:"/remote/file"},
+	webhdfs.Path{Name:"/remote/file"},
 	false,
 	0,
 	0,
@@ -70,9 +70,9 @@ ok, err := fs.Create(
 ```
 
 #### Open HDFS File
-Use the `FileSystem.Open()` to open and read a remote file from HDFS.  See https://godoc.org/github.com/vladimirvivien/gowfs#FileSystem.Open
+Use the `FileSystem.Open()` to open and read a remote file from HDFS.  See https://godoc.org/github.com/vladimirvivien/webhdfs#FileSystem.Open
 ```
-data, err := fs.Open(gowfs.Path{Name:"/remote/file"}, 0, 512, 2048)
+data, err := fs.Open(webhdfs.Path{Name:"/remote/file"}, 0, 512, 2048)
 ...
 rcvdData, _ := ioutil.ReadAll(data)
 fmt.Println(string(rcvdData))
@@ -80,32 +80,32 @@ fmt.Println(string(rcvdData))
 ```
 
 #### Append to File
-To append to an existing HDFS file, use `FileSystem.Append()`.  See https://godoc.org/github.com/vladimirvivien/gowfs#FileSystem.Append
+To append to an existing HDFS file, use `FileSystem.Append()`.  See https://godoc.org/github.com/vladimirvivien/webhdfs#FileSystem.Append
 ```
 ok, err := fs.Append(
     bytes.NewBufferString("Hello webhdfs users!"),
-    gowfs.Path{Name:"/remote/file"}, 4096)
+    webhdfs.Path{Name:"/remote/file"}, 4096)
 ```
 
 #### Rename File
-Use `FileSystem.Rename()` to rename HDFS resources. See https://godoc.org/github.com/vladimirvivien/gowfs#FileSystem.Rename
+Use `FileSystem.Rename()` to rename HDFS resources. See https://godoc.org/github.com/vladimirvivien/webhdfs#FileSystem.Rename
 ```
-ok, err := fs.Rename(gowfs.Path{Name:"/old/name"}, Path{Name:"/new/name"})
+ok, err := fs.Rename(webhdfs.Path{Name:"/old/name"}, Path{Name:"/new/name"})
 ```
 
 #### Delete HDFS Resources
-To delete an HDFS resource (file/directory), use `FileSystem.Delete()`.  See https://godoc.org/github.com/vladimirvivien/gowfs#FileSystem.Delete
+To delete an HDFS resource (file/directory), use `FileSystem.Delete()`.  See https://godoc.org/github.com/vladimirvivien/webhdfs#FileSystem.Delete
 ```go
-ok, err := fs.Delete(gowfs.Path{Name:"/remote/file/todelete"}, false)
+ok, err := fs.Delete(webhdfs.Path{Name:"/remote/file/todelete"}, false)
 ```
 
 #### File Status
-You can get status about an existing HDFS resource using `FileSystem.GetFileStatus()`. See https://godoc.org/github.com/vladimirvivien/gowfs#FileSystem.GetFileStatus
+You can get status about an existing HDFS resource using `FileSystem.GetFileStatus()`. See https://godoc.org/github.com/vladimirvivien/webhdfs#FileSystem.GetFileStatus
 
 ```go
-fileStatus, err := fs.GetFileStatus(gowfs.Path{Name:"/remote/file"})
+fileStatus, err := fs.GetFileStatus(webhdfs.Path{Name:"/remote/file"})
 ```
-gowfs returns a value of type FileStatus which is a struct with info about remote file.
+webhdfs returns a value of type FileStatus which is a struct with info about remote file.
 ```go
 type FileStatus struct {
 	AccesTime int64
@@ -122,7 +122,7 @@ type FileStatus struct {
 ```
 You can get a list of file stats using `FileSystem.ListStatus()`.
 ```go
-stats, err := fs.ListStatus(gowfs.Path{Name:"/remote/directory"})
+stats, err := fs.ListStatus(webhdfs.Path{Name:"/remote/directory"})
 for _, stat := range stats {
     fmt.Println(stat.PathSuffix, stat.Length)
 }
@@ -131,39 +131,39 @@ for _, stat := range stats {
 #### Create the FsShell
 To create an FsShell, you need to have an existing instance of FileSystem.
 ```go
-shell := gowfs.FsShell{FileSystem:fs}
+shell := webhdfs.FsShell{FileSystem:fs}
 ```
 #### FsShell.Put()
-Use the put to upload a local file to an HDFS file system. See https://godoc.org/github.com/vladimirvivien/gowfs#FsShell.PutOne
+Use the put to upload a local file to an HDFS file system. See https://godoc.org/github.com/vladimirvivien/webhdfs#FsShell.PutOne
 ```go
 ok, err := shell.Put("local/file/name", "hdfs/file/path", true)
 ```
 #### FsShell.Get()
-Use the Get to retrieve remote HDFS file to local file system. See https://godoc.org/github.com/vladimirvivien/gowfs#FsShell.Get
+Use the Get to retrieve remote HDFS file to local file system. See https://godoc.org/github.com/vladimirvivien/webhdfs#FsShell.Get
 ```go
 ok, err := shell.Get("hdfs/file/path", "local/file/name")
 ```
 
 #### FsShell.AppendToFile()
-Append local files to remote HDFS file or directory. See https://godoc.org/github.com/vladimirvivien/gowfs#FsShell.AppendToFile
+Append local files to remote HDFS file or directory. See https://godoc.org/github.com/vladimirvivien/webhdfs#FsShell.AppendToFile
 ```go
 ok, err := shell.AppendToFile([]string{"local/file/1", "local/file/2"}, "remote/hdfs/path")
 ```
 
 #### FsShell.Chown()
-Change owner for remote file.  See https://godoc.org/github.com/vladimirvivien/gowfs#FsShell.Chown.
+Change owner for remote file.  See https://godoc.org/github.com/vladimirvivien/webhdfs#FsShell.Chown.
 ```go
 ok, err := shell.Chown([]string{"/remote/hdfs/file"}, "owner2")
 ```
 
 #### FsShell.Chgrp()
-Change group of remote HDFS files.  See https://godoc.org/github.com/vladimirvivien/gowfs#FsShell.Chgrp
+Change group of remote HDFS files.  See https://godoc.org/github.com/vladimirvivien/webhdfs#FsShell.Chgrp
 ```go
 ok, err := shell.Chgrp([]string{"/remote/hdfs/file"}, "superduper")
 ```
 
 #### FsShell.Chmod()
-Change file mod of remote HDFS files.  See https://godoc.org/github.com/vladimirvivien/gowfs#FsShell.Chmod
+Change file mod of remote HDFS files.  See https://godoc.org/github.com/vladimirvivien/webhdfs#FsShell.Chmod
 ```go
 ok, err := shell.Chmod([]string{"/remote/hdfs/file/"}, 0744)
 ```

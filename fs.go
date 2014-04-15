@@ -1,9 +1,9 @@
 /*
-gowfs is Go bindings for the Hadoop HDFS over its WebHDFS interface.
-gowfs uses JSON marshalling to expose typed values from HDFS.
-See https://github.com/vladimirvivien/gowfs.
+webhdfs is Go bindings for the Hadoop HDFS over its WebHDFS interface.
+webhdfs uses JSON marshalling to expose typed values from HDFS.
+See https://github.com/vladimirvivien/webhdfs.
 */
-package gowfs
+package webhdfs
 
 import "encoding/json"
 import "net"

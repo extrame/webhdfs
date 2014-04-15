@@ -1,4 +1,4 @@
-package gowfs
+package webhdfs
 
 import "os"
 import "bytes"

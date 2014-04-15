@@ -1,4 +1,4 @@
-package gowfs
+package webhdfs
 
 import "net/url"
 import "testing"
