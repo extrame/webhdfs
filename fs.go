@@ -1,7 +1,7 @@
 /*
 webhdfs is Go bindings for the Hadoop HDFS over its WebHDFS interface.
 webhdfs uses JSON marshalling to expose typed values from HDFS.
-See https://github.com/vladimirvivien/webhdfs.
+See https://github.com/gohadoop/webhdfs.
 */
 package webhdfs
 

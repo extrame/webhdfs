@@ -5,7 +5,7 @@ This directory contains tests to be executed against a running Hadoop File Syste
 The following assumes your GOPATH is setup properly.
 * Start your local Hadoop File System or make sure to have access to a remote running system.
 * Ensure your HDFS system has `dfs.webhdfs.enabled` property enabled in hsdfs-site.xml
-* Import webhdfs with: `go get github.com/vladimirvivien/webhdfs`
+* Import webhdfs with: `go get github.com/gohadoop/webhdfs`
 * Don't forget to pull down the actual webhdfs project.
 * Change your working directory to webhdfs/test-hdfs
 * curl/download file http://www.gutenberg.org/cache/epub/2600/pg2600.txt
