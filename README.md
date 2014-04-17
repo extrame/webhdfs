@@ -1,17 +1,19 @@
-[![Build Status](https://drone.io/github.com/vladimirvivien/webhdfs/status.png)](https://drone.io/github.com/vladimirvivien/webhdfs/latest)
+[![Build Status](https://drone.io/github.com/gohadoop/webhdfs/status.png)](https://drone.io/github.com/vladimirvivien/webhdfs/latest)
 
 ## webhdfs 
-webhdfs is a Go bindings for Hadoop HDFS via its WebHDFS interface.  It provides typed access to remote HDFS resources via Go's JSON marshaling system.  webhdfs follows the WebHDFS JSON protocol outline in  http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/WebHDFS.html.  It has been tested with Apache Hadoop 2.x.x - series.
+webhdfs is a Go bindings for Hadoop HDFS via its WebHDFS interface.  
+
+It provides typed access to remote HDFS resources via Go's JSON marshaling system.  It follows the WebHDFS JSON protocol outline in  http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/WebHDFS.html.  It has been tested with Apache Hadoop 2.x.x - series.
 
 #### GoDoc Package Documentation
-GoDoc documentation - https://godoc.org/github.com/vladimirvivien/webhdfs
+GoDoc documentation - https://godoc.org/github.com/gohadoop/webhdfs
 
 ### Usage
 ```
-go get github.com/vladimirvivien/webhdfs
+go get github.com/gohadoop/webhdfs
 ```
 ```go
-import github.com/vladimirvivien/webhdfs
+import github.com/gohadoop/webhdfs
 ...
 fs, err := webhdfs.NewFileSystem(webhdfs.Configuration{Addr: "localhost:50070", User: "hdfs"})
 if err != nil{
