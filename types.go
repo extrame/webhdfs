@@ -146,3 +146,7 @@ type RemoteException struct {
 func (re RemoteException) Error() string {
 	return fmt.Sprintf("RemoteException: %v [%v]\n[%v]\n", re.Exception, re.JavaClassName, re.Message)
 }
+
+func (re RemoteException) isEmpty() bool {
+	return re.Exception == "" && re.JavaClassName == "" && re.Message == ""
+}

@@ -69,7 +69,7 @@ func (fs *FileSystem) Create(
 	}
 
 	req, _ = http.NewRequest("PUT", u.String(), data)
-        req.Header.Add("Content-Type", "application/octet-stream")
+	req.Header.Add("Content-Type", "application/octet-stream")
 	rsp, err = fs.client.Do(req)
 	if err != nil {
 		fmt.Errorf("FileSystem.Create(%s) - bad url: %s", loc, err.Error())
@@ -137,13 +137,13 @@ func (fs *FileSystem) Open(p Path, offset, length int64, buffSize int) (io.ReadC
 // See HDFS FileSystem.append()
 // See http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/WebHDFS.html#Append_to_a_File
 // NOTE: Append() is known to have issues - see https://issues.apache.org/jira/browse/HDFS-4600
-func (fs *FileSystem) Append(data io.Reader, p Path, buffersize int) (bool, error) {
+func (fs *FileSystem) Append(data io.Reader, p Path, buffersize uint) (bool, error) {
 	params := map[string]string{"op": OP_APPEND}
 
 	if buffersize == 0 {
 		params["buffersize"] = "4096"
 	} else {
-		params["buffersize"] = strconv.FormatInt(int64(buffersize), 10)
+		params["buffersize"] = strconv.FormatUint(uint64(buffersize), 10)
 	}
 
 	u, err := buildRequestUrl(fs.Config, &p, &params)
@@ -174,11 +174,13 @@ func (fs *FileSystem) Append(data io.Reader, p Path, buffersize int) (bool, erro
 
 	if rsp.StatusCode != http.StatusOK {
 		defer rsp.Body.Close()
-		_, err = responseToHdfsData(rsp)
+		res, err := responseToHdfsData(rsp)
 		if err != nil {
 			return false, err
+		} else if !res.RemoteException.isEmpty() {
+			return false, res.RemoteException
 		}
-		return false, fmt.Errorf("Append(%s) - File not created.  Server returned status %v", loc, rsp.StatusCode)
+		return false, &HttpError{ACTION_FS_APPEND, loc, rsp.StatusCode}
 	}
 
 	return true, nil
