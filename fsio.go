@@ -159,7 +159,7 @@ func (fs *FileSystem) Append(data io.Reader, p Path, buffersize uint) (bool, err
 		return false, err
 	}
 
-	if rsp.StatusCode != http.StatusOK {
+	if rsp.StatusCode != http.StatusTemporaryRedirect {
 		defer rsp.Body.Close()
 		res, err := responseToHdfsData(rsp)
 		if err != nil {
