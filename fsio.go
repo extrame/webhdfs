@@ -159,6 +159,17 @@ func (fs *FileSystem) Append(data io.Reader, p Path, buffersize uint) (bool, err
 		return false, err
 	}
 
+	if rsp.StatusCode != http.StatusOK {
+		defer rsp.Body.Close()
+		res, err := responseToHdfsData(rsp)
+		if err != nil {
+			return false, err
+		} else if !res.RemoteException.isEmpty() {
+			return false, res.RemoteException
+		}
+		return false, &HttpError{ACTION_FS_APPEND, loc, rsp.StatusCode}
+	}
+
 	// extract returned url in header.
 	loc := rsp.Header.Get("Location")
 	u, err = url.ParseRequestURI(loc)
