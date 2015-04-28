@@ -167,7 +167,7 @@ func (fs *FileSystem) Append(data io.Reader, p Path, buffersize uint) (bool, err
 		} else if !res.RemoteException.isEmpty() {
 			return false, res.RemoteException
 		}
-		return false, &HttpError{ACTION_FS_APPEND, u, rsp.StatusCode}
+		return false, &HttpError{ACTION_FS_APPEND, u.String(), rsp.StatusCode}
 	}
 
 	// extract returned url in header.
