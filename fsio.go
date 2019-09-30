@@ -178,6 +178,7 @@ func (fs *FileSystem) Append(data io.Reader, p Path, buffersize uint) (bool, err
 	}
 
 	req, _ = http.NewRequest("POST", u.String(), data)
+	req.Header.Add("Content-Type", "application/octet-stream")
 	rsp, err = fs.client.Do(req)
 	if err != nil {
 		return false, err
